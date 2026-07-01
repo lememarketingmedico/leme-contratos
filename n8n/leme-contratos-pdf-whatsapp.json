@@ -1,0 +1,224 @@
+{
+  "name": "LEME Contratos - PDF Gotenberg + WhatsApp",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "leme-contratos-pdf",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "8a6c7a0f-55c9-41c1-a63f-0bbff63257e3",
+      "name": "Webhook LEME Contratos"
+    },
+    {
+      "parameters": {
+        "jsCode": "const recebido = $json.body || $json;\nconst headers = $json.headers || {};\n\nconst tokenRecebido = headers['x-leme-pdf-token'] || headers['X-Leme-Pdf-Token'] || headers['x-leme-pdf-token'.toLowerCase()];\nconst tokenEsperado = 'LemeContratosPDF_2026_seguro';\n\nif (tokenEsperado && tokenRecebido !== tokenEsperado) {\n  throw new Error('Token inválido no webhook de contratos da LEME. Confira N8N_PDF_WEBHOOK_TOKEN no EasyPanel.');\n}\n\nconst html = recebido.html;\nif (!html) {\n  throw new Error('O campo html não chegou no webhook.');\n}\n\nconst rawFilename = recebido.filename || recebido.meta?.clientName || 'contrato-leme';\nconst filename = String(rawFilename)\n  .normalize('NFD')\n  .replace(/[\\u0300-\\u036f]/g, '')\n  .replace(/[^a-zA-Z0-9-_]+/g, '-')\n  .replace(/-+/g, '-')\n  .replace(/^-|-$/g, '')\n  .toLowerCase() || 'contrato-leme';\n\nconst clientName = recebido.meta?.clientName || 'cliente';\nconst contractNumber = recebido.meta?.contractNumber || '';\n\nreturn [\n  {\n    json: {\n      filename,\n      clientName,\n      contractNumber,\n      meta: recebido.meta || {},\n      caption: `📄✅ Contrato gerado pela LEME para *${clientName}*${contractNumber ? `\\nContrato: ${contractNumber}` : ''}`\n    },\n    binary: {\n      data: {\n        data: Buffer.from(html, 'utf8').toString('base64'),\n        mimeType: 'text/html',\n        fileName: 'index.html'\n      }\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "id": "c1030e1c-48c8-4e91-bb8b-d065b90ca27d",
+      "name": "Validar e preparar HTML"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://leme-gotenberg.bnwvvh.easypanel.host/forms/chromium/convert/html",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Gotenberg-Output-Filename",
+              "value": "={{ $json.filename }}.pdf"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "files",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "pdf"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        520,
+        0
+      ],
+      "id": "8b63e8f2-d4ec-4673-9138-94adbb9d3a70",
+      "name": "Gotenberg PDF"
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "binaryPropertyName": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        780,
+        0
+      ],
+      "id": "cd58674e-4824-4f9f-af24-0218210b99e8",
+      "name": "PDF em base64"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "operation": "send-document",
+        "instanceName": "Leme Marketing Médico",
+        "remoteJid": "120363044858833254@g.us",
+        "media": "={{ $json.data }}",
+        "caption": "={{ $('Validar e preparar HTML').first().json.caption }}",
+        "fileName": "={{ $('Validar e preparar HTML').first().json.filename }}.pdf",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "3fc66b1e-50a3-4046-85cb-21d1f74dd7e6",
+      "name": "Enviar contrato no WhatsApp",
+      "credentials": {
+        "evolutionApi": {
+          "id": "YN1IPxHgezfgnFka",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const pdfItem = $items('PDF em base64')[0].json;\nconst prepared = $items('Validar e preparar HTML')[0].json;\nconst whatsappResponse = $input.first()?.json || {};\n\nreturn [\n  {\n    json: {\n      ok: true,\n      whatsappSent: true,\n      filename: `${prepared.filename}.pdf`,\n      pdfBase64: pdfItem.data,\n      data: pdfItem.data,\n      whatsappResponse\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1300,
+        0
+      ],
+      "id": "71ac72dc-3a80-4490-ac31-d620a25dc155",
+      "name": "Preparar resposta para o sistema"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1560,
+        0
+      ],
+      "id": "f0d3b6d2-4e53-445a-aa93-68944cc7169d",
+      "name": "Responder para baixar PDF"
+    }
+  ],
+  "connections": {
+    "Webhook LEME Contratos": {
+      "main": [
+        [
+          {
+            "node": "Validar e preparar HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar e preparar HTML": {
+      "main": [
+        [
+          {
+            "node": "Gotenberg PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gotenberg PDF": {
+      "main": [
+        [
+          {
+            "node": "PDF em base64",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDF em base64": {
+      "main": [
+        [
+          {
+            "node": "Enviar contrato no WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar contrato no WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Preparar resposta para o sistema",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar resposta para o sistema": {
+      "main": [
+        [
+          {
+            "node": "Responder para baixar PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2026-07-01T14:55:00.000Z",
+  "versionId": "leme-contratos-v8"
+}

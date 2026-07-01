@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '../../../../../lib/db';
 import { getCurrentUser } from '../../../../../lib/auth';
-import { generateContractPdf } from '../../../../../lib/contractPdf';
+import { buildContractHtml } from '../../../../../lib/contractHtml';
+import { htmlToPdfViaN8n } from '../../../../../lib/n8nPdf';
 import { publicUrl } from '../../../../../lib/url';
 
 export const runtime = 'nodejs';
@@ -33,6 +34,16 @@ function errorText(error: unknown) {
   } catch {
     return String(error);
   }
+}
+
+function safeFilename(number: string, clientName: string) {
+  return `${number}-${clientName}`
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9-_]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .toLowerCase() || 'contrato-leme';
 }
 
 function pdfResponse(buffer: Buffer, filename: string) {
@@ -67,25 +78,29 @@ export async function GET(request: Request, { params }: { params: { id: string }
       company = await prisma.companyConfig.create({ data: defaultCompanyConfig });
     }
 
-    const buffer = await generateContractPdf({
+    const filename = safeFilename(contract.number, contract.client.name);
+    const html = buildContractHtml({
       ...contract,
       company
     });
 
-    const filename = `${contract.number}-${contract.client.name}`
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-zA-Z0-9-_]+/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '')
-      .toLowerCase();
+    const buffer = await htmlToPdfViaN8n({
+      html,
+      filename,
+      meta: {
+        contractId: contract.id,
+        contractNumber: contract.number,
+        clientName: contract.client.name,
+        generatedBy: user.email
+      }
+    });
 
-    return pdfResponse(buffer, filename || 'contrato-leme');
+    return pdfResponse(buffer, filename);
   } catch (error) {
-    console.error('[LEME Contratos] Erro ao gerar PDF:', error);
+    console.error('[LEME Contratos] Erro ao gerar PDF via n8n/Gotenberg:', error);
 
     return new NextResponse(
-      `Erro ao gerar PDF no LEME Contratos.\n\nCopie esta mensagem e envie para correção:\n\n${errorText(error)}`,
+      `Erro ao gerar PDF no LEME Contratos via n8n/Gotenberg.\n\nCopie esta mensagem e envie para correção:\n\n${errorText(error)}`,
       {
         status: 500,
         headers: {

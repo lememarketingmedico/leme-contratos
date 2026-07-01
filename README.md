@@ -310,3 +310,47 @@ NEXT_PUBLIC_APP_URL=https://contratos.lememarketingmedico.com.br
 PORT=3000
 HOSTNAME=0.0.0.0
 ```
+
+---
+
+# Atualização V7: PDF via n8n + Gotenberg
+
+A geração de PDF agora pode ser feita pelo n8n usando Gotenberg. Isso evita problemas de PDF dentro do container do Next.js.
+
+No EasyPanel, no serviço `contratos-web`, adicione:
+
+```env
+N8N_PDF_WEBHOOK_URL=https://SEU-N8N/webhook/leme-contratos-pdf
+N8N_PDF_WEBHOOK_TOKEN=LemeContratosPDF_2026_seguro
+N8N_PDF_TIMEOUT_MS=120000
+```
+
+Enquanto estiver testando no editor do n8n, use `webhook-test`. Depois de ativar o workflow, use `webhook`.
+
+O passo a passo completo está no arquivo:
+
+```txt
+N8N-GOTENBERG-PDF.md
+```
+
+Rota de teste:
+
+```txt
+https://contratos.lememarketingmedico.com.br/api/health/n8n-pdf
+```
+
+Se essa rota baixar um PDF, o fluxo n8n + Gotenberg está funcionando.
+
+## V8: correção Prisma + n8n WhatsApp
+
+Se o EasyPanel mostrar que está baixando `prisma@7.x`, faça deploy desta versão V8 e use rebuild sem cache.
+
+O projeto usa Prisma 5.22.0 fixado. O Dockerfile chama o binário local `./node_modules/.bin/prisma`, evitando que o `npx` baixe a versão mais nova.
+
+Também foi incluído o workflow completo do n8n em:
+
+```txt
+n8n/leme-contratos-pdf-whatsapp.json
+```
+
+Esse workflow recebe o HTML do sistema, gera PDF no Gotenberg, envia no WhatsApp pela Evolution API e devolve o PDF em base64 para o sistema baixar no navegador.

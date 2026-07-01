@@ -86,3 +86,19 @@ Error: Schema engine error
 Use esta versão corrigida do ZIP. O Dockerfile instala `openssl` e `ca-certificates`, e o `schema.prisma` foi ajustado para `debian-openssl-3.0.x`.
 
 Depois de subir o código novo no GitHub, faça **Redeploy sem cache**, se o EasyPanel tiver essa opção. Se não tiver, faça um redeploy normal.
+
+## PDF via n8n + Gotenberg
+
+No serviço `contratos-web`, além das variáveis existentes, adicione:
+
+```env
+N8N_PDF_WEBHOOK_URL=https://SEU-N8N/webhook/leme-contratos-pdf
+N8N_PDF_WEBHOOK_TOKEN=LemeContratosPDF_2026_seguro
+N8N_PDF_TIMEOUT_MS=120000
+```
+
+Teste com:
+
+```txt
+https://contratos.lememarketingmedico.com.br/api/health/n8n-pdf
+```

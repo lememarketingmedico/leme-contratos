@@ -21,7 +21,7 @@ echo "Sincronizando tabelas do PostgreSQL. Se o banco ainda estiver iniciando, o
 
 attempt=1
 max_attempts=24
-until npx prisma db push --skip-generate; do
+until ./node_modules/.bin/prisma db push --skip-generate; do
   if [ "$attempt" -ge "$max_attempts" ]; then
     echo "ERRO: não foi possível conectar/sincronizar o PostgreSQL depois de $max_attempts tentativas."
     echo "Confira a DATABASE_URL, principalmente host, usuário, senha codificada com %40 e nome do banco."
@@ -36,4 +36,4 @@ echo "Criando/atualizando usuário administrador e dados iniciais..."
 node scripts/seed.mjs
 
 echo "LEME Contratos pronto. Subindo Next.js em http://0.0.0.0:$PORT ..."
-exec npx next start -H 0.0.0.0 -p "$PORT"
+exec ./node_modules/.bin/next start -H 0.0.0.0 -p "$PORT"
