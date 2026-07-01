@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { prisma } from '../lib/db';
 import { onlyDate, parseMoneyToCents, valueToWordsBRL } from '../lib/format';
+import { DEFAULT_CONTRACT_TEMPLATE_HTML } from '../lib/contractHtml';
 import { requireUser } from '../lib/auth';
 
 function field(formData: FormData, name: string) {
@@ -107,7 +108,8 @@ export async function saveCompanyConfigAction(formData: FormData) {
   await requireUser();
   const id = optionalField(formData, 'id');
   const data = {
-    companyName: field(formData, 'companyName') || 'LEME MARKETING MÉDICO',
+    companyName: field(formData, 'companyName') || '62.641.373 MATHEUS ISSAO RIBEIRO ADATI',
+    tradeName: optionalField(formData, 'tradeName') || 'Leme Marketing Médico',
     document: optionalField(formData, 'document'),
     address: optionalField(formData, 'address'),
     city: optionalField(formData, 'city'),
@@ -118,7 +120,8 @@ export async function saveCompanyConfigAction(formData: FormData) {
     bankInfo: optionalField(formData, 'bankInfo'),
     logoPath: '/logo-leme.png',
     defaultForoCity: optionalField(formData, 'defaultForoCity'),
-    signatureLabel: optionalField(formData, 'signatureLabel')
+    signatureLabel: optionalField(formData, 'signatureLabel') || 'LEME MARKETING MÉDICO',
+    contractTemplateHtml: optionalField(formData, 'contractTemplateHtml') || DEFAULT_CONTRACT_TEMPLATE_HTML
   };
 
   if (id) {

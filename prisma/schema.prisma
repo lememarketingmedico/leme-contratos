@@ -51,21 +51,23 @@ model Preset {
 }
 
 model CompanyConfig {
-  id              String   @id @default(cuid())
-  companyName     String
-  document        String?  @db.Text
-  address         String?  @db.Text
-  city            String?  @db.Text
-  state           String?  @db.Text
-  email           String?  @db.Text
-  phone           String?  @db.Text
-  pix             String?  @db.Text
-  bankInfo        String?  @db.Text
-  logoPath        String?  @db.Text
-  defaultForoCity String?  @db.Text
-  signatureLabel  String?  @db.Text
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                   String   @id @default(cuid())
+  companyName          String
+  tradeName            String?  @db.Text
+  document             String?  @db.Text
+  address              String?  @db.Text
+  city                 String?  @db.Text
+  state                String?  @db.Text
+  email                String?  @db.Text
+  phone                String?  @db.Text
+  pix                  String?  @db.Text
+  bankInfo             String?  @db.Text
+  logoPath             String?  @db.Text
+  defaultForoCity      String?  @db.Text
+  signatureLabel       String?  @db.Text
+  contractTemplateHtml String?  @db.Text
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 }
 
 model Client {

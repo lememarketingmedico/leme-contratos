@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '../../../../../lib/db';
 import { getCurrentUser } from '../../../../../lib/auth';
-import { buildContractHtml } from '../../../../../lib/contractHtml';
+import { buildContractHtml, DEFAULT_CONTRACT_TEMPLATE_HTML } from '../../../../../lib/contractHtml';
 import { htmlToPdfViaN8n } from '../../../../../lib/n8nPdf';
 import { publicUrl } from '../../../../../lib/url';
 
@@ -10,7 +10,8 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 const defaultCompanyConfig = {
-  companyName: 'LEME MARKETING MÉDICO',
+  companyName: '62.641.373 MATHEUS ISSAO RIBEIRO ADATI',
+  tradeName: 'Leme Marketing Médico',
   document: '62.641.373/0001-07',
   address: 'Rua Zélia Maria Silva Braga, nº 43, Bairro Milenium, CEP 38.447-439',
   city: 'Araguari',
@@ -21,7 +22,8 @@ const defaultCompanyConfig = {
   bankInfo: '',
   logoPath: '/logo-leme.png',
   defaultForoCity: 'Araguari/MG',
-  signatureLabel: 'LEME MARKETING MÉDICO'
+  signatureLabel: 'LEME MARKETING MÉDICO',
+  contractTemplateHtml: DEFAULT_CONTRACT_TEMPLATE_HTML
 };
 
 function errorText(error: unknown) {
