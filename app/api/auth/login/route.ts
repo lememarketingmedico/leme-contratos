@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '../../../../lib/db';
 import { createSessionToken, SESSION_COOKIE, verifyPassword } from '../../../../lib/auth';
+import { publicUrl } from '../../../../lib/url';
 
 export async function POST(request: Request) {
   const formData = await request.formData();
@@ -11,11 +12,11 @@ export async function POST(request: Request) {
   const isValid = user ? await verifyPassword(password, user.passwordHash) : false;
 
   if (!user || !isValid) {
-    return NextResponse.redirect(new URL('/login?erro=1', request.url), { status: 303 });
+    return NextResponse.redirect(publicUrl('/login?erro=1', request), { status: 303 });
   }
 
   const token = createSessionToken({ userId: user.id, email: user.email });
-  const response = NextResponse.redirect(new URL('/dashboard', request.url), { status: 303 });
+  const response = NextResponse.redirect(publicUrl('/dashboard', request), { status: 303 });
   response.cookies.set(SESSION_COOKIE, token, {
     httpOnly: true,
     sameSite: 'lax',

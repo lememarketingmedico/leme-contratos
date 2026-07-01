@@ -2,13 +2,14 @@ import { NextResponse } from 'next/server';
 import { prisma } from '../../../../../lib/db';
 import { getCurrentUser } from '../../../../../lib/auth';
 import { generateContractPdf } from '../../../../../lib/contractPdf';
+import { publicUrl } from '../../../../../lib/url';
 
 export const runtime = 'nodejs';
 
 export async function GET(_request: Request, { params }: { params: { id: string } }) {
   const user = await getCurrentUser();
   if (!user) {
-    return NextResponse.redirect(new URL('/login', _request.url), { status: 303 });
+    return NextResponse.redirect(publicUrl('/login', _request), { status: 303 });
   }
 
   const contract = await prisma.contract.findUnique({
