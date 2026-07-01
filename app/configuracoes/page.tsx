@@ -2,6 +2,7 @@ import { prisma } from '../../lib/db';
 import { requireUser } from '../../lib/auth';
 import { saveCompanyConfigAction } from '../actions';
 import { DEFAULT_CONTRACT_TEMPLATE_HTML } from '../../lib/contractHtml';
+import ContractTemplateEditor from '../../components/ContractTemplateEditor';
 
 const placeholders = [
   '{{client_name}}',
@@ -67,30 +68,12 @@ export default async function ConfigPage({ searchParams }: { searchParams?: { sa
           <div className="field"><label>Dados bancários</label><input className="input" name="bankInfo" defaultValue={config?.bankInfo || ''} /></div>
         </div>
 
-        <div className="field" style={{ marginTop: 12 }}>
-          <label>Modelo completo do contrato em HTML</label>
-          <p style={{ margin: '6px 0 12px', color: 'var(--muted)' }}>
-            Se um dia vocês mudarem o contrato, basta editar este campo. O PDF passa a usar exatamente o texto salvo aqui.
-            Os dados automáticos devem usar as variáveis abaixo.
-          </p>
-          <textarea
-            className="textarea"
+        <div style={{ marginTop: 18 }}>
+          <ContractTemplateEditor
             name="contractTemplateHtml"
             defaultValue={config?.contractTemplateHtml || DEFAULT_CONTRACT_TEMPLATE_HTML}
-            style={{ minHeight: 780, fontFamily: 'monospace', fontSize: 13, lineHeight: 1.45 }}
+            placeholders={placeholders}
           />
-        </div>
-
-        <div className="card" style={{ marginTop: 16, background: 'var(--surface-soft)' }}>
-          <h2 style={{ marginTop: 0 }}>Variáveis disponíveis</h2>
-          <p style={{ color: 'var(--muted)' }}>Use estas variáveis dentro do HTML para o sistema preencher automaticamente:</p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
-            {placeholders.map((item) => (
-              <span key={item} style={{ padding: '6px 10px', borderRadius: 999, border: '1px solid var(--border)', fontFamily: 'monospace', fontSize: 12 }}>
-                {item}
-              </span>
-            ))}
-          </div>
         </div>
 
         <div style={{ height: 16 }} />

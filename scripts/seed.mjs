@@ -101,24 +101,17 @@ const defaultContractTemplateHtml = `
     <p class="signature-date">{{signature_city}}, {{signature_date_long}}.</p>
   </section>
 
-  <section class="signature-page">
-    <div class="signature-grid">
-      <div class="signature-box">
-        <div class="signature-line"></div>
-        <p class="signature-title">CONTRATANTE</p>
-        <p class="signature-name">{{client_signature_name}}</p>
-        <p class="signature-doc">CPF/CNPJ nº {{client_document}}</p>
-      </div>
-      <div class="signature-box">
-        <div class="signature-line"></div>
-        <p class="signature-title">{{company_signature_label}}</p>
-        <p class="signature-name">{{company_signature_label}}</p>
-        <p class="signature-doc">CNPJ nº {{company_document}}</p>
-      </div>
+  <section class="signature-stack">
+    <div class="signature-box">
+      <div class="signature-line"></div>
+      <p class="signature-title">CONTRATANTE</p>
     </div>
 
-    <p class="signature-meta">Responsável pelo preenchimento: {{preset_full_name}} - {{preset_signature_title}}. Contrato nº {{contract_number}}.</p>
-    <p class="signature-meta bottom">Documento gerado automaticamente pela plataforma LEME Contratos.</p>
+    <div class="signature-box">
+      <div class="signature-line"></div>
+      <p class="signature-title">{{company_signature_label}}</p>
+      <p class="signature-doc">CNPJ nº {{company_document}}</p>
+    </div>
   </section>
 </div>`;
 

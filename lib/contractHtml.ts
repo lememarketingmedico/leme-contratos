@@ -188,24 +188,17 @@ function getDefaultTemplate() {
         <p class="signature-date">{{signature_city}}, {{signature_date_long}}.</p>
       </section>
 
-      <section class="signature-page">
-        <div class="signature-grid">
-          <div class="signature-box">
-            <div class="signature-line"></div>
-            <p class="signature-title">CONTRATANTE</p>
-            <p class="signature-name">{{client_signature_name}}</p>
-            <p class="signature-doc">CPF/CNPJ nº {{client_document}}</p>
-          </div>
-          <div class="signature-box">
-            <div class="signature-line"></div>
-            <p class="signature-title">{{company_signature_label}}</p>
-            <p class="signature-name">{{company_signature_label}}</p>
-            <p class="signature-doc">CNPJ nº {{company_document}}</p>
-          </div>
+      <section class="signature-stack">
+        <div class="signature-box">
+          <div class="signature-line"></div>
+          <p class="signature-title">CONTRATANTE</p>
         </div>
 
-        <p class="signature-meta">Responsável pelo preenchimento: {{preset_full_name}} - {{preset_signature_title}}. Contrato nº {{contract_number}}.</p>
-        <p class="signature-meta bottom">Documento gerado automaticamente pela plataforma LEME Contratos.</p>
+        <div class="signature-box">
+          <div class="signature-line"></div>
+          <p class="signature-title">{{company_signature_label}}</p>
+          <p class="signature-doc">CNPJ nº {{company_document}}</p>
+        </div>
       </section>
     </div>
   `;
@@ -214,83 +207,117 @@ function getDefaultTemplate() {
 function buildStyles() {
   return `
     <style>
-      @page { size: A4; margin: 20mm 16mm 20mm 16mm; }
+      @page { size: A4; margin: 18mm 15mm 18mm 15mm; }
       * { box-sizing: border-box; }
       html, body { margin: 0; padding: 0; }
       body {
         font-family: "Times New Roman", Times, serif;
         color: #111;
         font-size: 14px;
-        line-height: 1.45;
+        line-height: 1.38;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }
       .document { width: 100%; }
       h1 {
-        margin: 0 0 18px;
+        margin: 0 0 28px;
         text-align: center;
         font-size: 20px;
-        line-height: 1.3;
+        line-height: 1.25;
         font-weight: 700;
       }
       h2 {
-        margin: 22px 0 10px;
+        margin: 24px 0 10px;
         font-size: 15px;
-        line-height: 1.3;
+        line-height: 1.25;
         font-weight: 700;
         page-break-after: avoid;
         break-after: avoid;
       }
       p {
-        margin: 0 0 10px;
+        margin: 0 0 9px;
         text-align: justify;
         orphans: 3;
         widows: 3;
       }
+
+      /* Evita páginas quase vazias: as cláusulas podem quebrar normalmente.
+         Só títulos e assinatura ficam protegidos contra quebras feias. */
       .title-block,
-      .contract-section,
       .notes-block,
       .closing-block,
+      .signature-stack,
       .signature-box {
         page-break-inside: avoid;
         break-inside: avoid-page;
       }
+
+      .contract-section {
+        page-break-inside: auto;
+        break-inside: auto;
+      }
+
       .notes-block p { white-space: normal; }
       .signature-date {
-        margin-top: 22px;
+        margin-top: 26px;
+        margin-bottom: 34px;
         text-align: left;
       }
-      .signature-page {
-        page-break-before: always;
-        break-before: page;
-        padding-top: 48px;
-        min-height: 210mm;
+
+      /* Compatibilidade com contratos salvos na versão anterior.
+         Mesmo que o HTML salvo ainda tenha signature-page/signature-grid,
+         a assinatura não será mais forçada para uma página nova. */
+      .signature-page,
+      .signature-stack {
+        page-break-before: auto !important;
+        break-before: auto !important;
+        page-break-inside: avoid;
+        break-inside: avoid-page;
+        padding-top: 22px !important;
+        min-height: 0 !important;
       }
+
       .signature-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 40px;
-        align-items: start;
+        display: block !important;
       }
+
+      .signature-box {
+        width: 58%;
+        margin-top: 34px;
+      }
+
       .signature-line {
         border-top: 1px solid #111;
-        margin-bottom: 8px;
+        margin-bottom: 9px;
+        width: 100%;
       }
+
       .signature-title,
       .signature-name,
       .signature-doc,
       .signature-meta {
-        text-align: center;
+        text-align: left;
       }
-      .signature-title { font-weight: 400; margin-bottom: 4px; }
-      .signature-name { font-weight: 700; margin-bottom: 4px; }
-      .signature-doc { margin-bottom: 0; }
+
+      .signature-title {
+        font-weight: 700;
+        font-size: 16px;
+        margin-bottom: 0;
+      }
+
+      .signature-name {
+        font-weight: 700;
+        margin-bottom: 3px;
+      }
+
+      .signature-doc {
+        font-weight: 700;
+        margin-bottom: 0;
+      }
+
       .signature-meta {
-        margin-top: 24px;
-        font-size: 12px;
-        color: #3f4e66;
+        display: none !important;
       }
-      .signature-meta.bottom { margin-top: 28px; }
     </style>
   `;
 }
