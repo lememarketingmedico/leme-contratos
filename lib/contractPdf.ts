@@ -70,7 +70,11 @@ function addHeader(doc: PDFKit.PDFDocument) {
   doc.rect(0, 0, pageWidth, 74).fill('#183850');
 
   if (fs.existsSync(logoPath)) {
-    doc.image(logoPath, 46, 20, { width: 150 });
+    try {
+      doc.image(logoPath, 46, 20, { width: 150 });
+    } catch {
+      doc.fillColor('#ffffff').font('Helvetica-Bold').fontSize(18).text('LEME', 46, 24);
+    }
   } else {
     doc.fillColor('#ffffff').font('Helvetica-Bold').fontSize(18).text('LEME', 46, 24);
   }
@@ -163,7 +167,8 @@ export async function generateContractPdf(data: ContractData): Promise<Buffer> {
     doc.on('end', () => resolve(Buffer.concat(chunks)));
     doc.on('pageAdded', () => addHeader(doc));
 
-    addHeader(doc);
+    try {
+      addHeader(doc);
 
     doc.font('Times-Bold').fontSize(16).fillColor('#111111').text(
       'CONTRATO DE PRESTAÇÃO DE SERVIÇOS DE MARKETING DIGITAL',
@@ -361,7 +366,32 @@ export async function generateContractPdf(data: ContractData): Promise<Buffer> {
       );
     }
 
-    addPageNumbers(doc);
-    doc.end();
+      addPageNumbers(doc);
+      doc.end();
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+export async function generateBasicPdf(title = 'LEME Contratos'): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const doc = new PDFDocument({ size: 'A4', margins: { top: 72, left: 46, right: 46, bottom: 60 } });
+    const chunks: Buffer[] = [];
+    doc.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+    doc.on('error', reject);
+    doc.on('end', () => resolve(Buffer.concat(chunks)));
+
+    try {
+      doc.rect(0, 0, doc.page.width, 74).fill('#183850');
+      doc.fillColor('#ffffff').font('Helvetica-Bold').fontSize(18).text('LEME Contratos', 46, 26);
+      doc.fillColor('#111111').font('Helvetica-Bold').fontSize(18).text(title, 46, 110);
+      doc.moveDown();
+      doc.font('Helvetica').fontSize(12).text('PDF de teste gerado com sucesso pela plataforma LEME Contratos.');
+      doc.text(`Data: ${new Date().toLocaleString('pt-BR')}`);
+      doc.end();
+    } catch (error) {
+      reject(error);
+    }
   });
 }
