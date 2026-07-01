@@ -522,3 +522,275 @@ tr:last-child td {
     position: static;
   }
 }
+
+/* V12 - Editor visual A4 completo */
+.template-builder {
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface-soft);
+  overflow: hidden;
+}
+
+.template-builder-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.template-builder-header h2 {
+  margin: 0 0 6px;
+}
+
+.template-builder-header p,
+.code-editor-panel p,
+.template-help-card p {
+  color: var(--muted);
+  margin: 0;
+}
+
+.template-mode-actions,
+.template-toolbar,
+.toolbar-variable-group,
+.toolbar-zoom-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.primary-button.small,
+.secondary-button.small {
+  padding: 8px 10px;
+  min-height: auto;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.template-toolbar {
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.toolbar-variable-group {
+  margin-left: auto;
+}
+
+.toolbar-zoom-group {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.select.compact {
+  width: auto;
+  min-width: 210px;
+  height: 36px;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.a4-preview-shell {
+  background: #252525;
+  padding: 14px;
+}
+
+.a4-preview-ruler {
+  color: #e5e7eb;
+  font-size: 12px;
+  margin: 0 0 10px;
+  text-align: center;
+}
+
+.a4-preview-viewport {
+  width: 100%;
+  max-height: 82vh;
+  min-height: 760px;
+  overflow: auto;
+  border-radius: 10px;
+  background: #1f1f1f;
+  padding: 24px;
+}
+
+.a4-scale-wrap {
+  margin: 0 auto;
+  transform-origin: top center;
+}
+
+.a4-editable-paper {
+  width: 794px;
+  min-height: 2246px;
+  padding: 68px 57px;
+  transform-origin: top left;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      #ffffff 0px,
+      #ffffff 1114px,
+      #ef4444 1114px,
+      #ef4444 1118px,
+      #f3f4f6 1118px,
+      #f3f4f6 1123px
+    );
+  box-shadow: 0 0 0 1px #d1d5db, 0 16px 50px rgba(0,0,0,0.28);
+  color: #111;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 14px;
+  line-height: 1.38;
+  outline: none;
+  cursor: text;
+}
+
+.a4-editable-paper h1 {
+  margin: 0 0 28px;
+  text-align: center;
+  font-size: 20px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.a4-editable-paper h2 {
+  margin: 24px 0 10px;
+  font-size: 15px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.a4-editable-paper p {
+  margin: 0 0 9px;
+  text-align: justify;
+}
+
+.a4-editable-paper .signature-date {
+  margin-top: 26px;
+  margin-bottom: 34px;
+  text-align: left;
+}
+
+.a4-editable-paper .signature-page,
+.a4-editable-paper .signature-stack {
+  page-break-before: auto !important;
+  break-before: auto !important;
+  padding-top: 22px !important;
+  min-height: 0 !important;
+}
+
+.a4-editable-paper .signature-grid {
+  display: block !important;
+}
+
+.a4-editable-paper .signature-box {
+  width: 58%;
+  margin-top: 34px;
+}
+
+.a4-editable-paper .signature-line {
+  border-top: 1px solid #111;
+  margin-bottom: 9px;
+  width: 100%;
+}
+
+.a4-editable-paper .signature-title,
+.a4-editable-paper .signature-name,
+.a4-editable-paper .signature-doc,
+.a4-editable-paper .signature-meta {
+  text-align: left;
+}
+
+.a4-editable-paper .signature-title {
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 0;
+}
+
+.a4-editable-paper .signature-name,
+.a4-editable-paper .signature-doc {
+  font-weight: 700;
+}
+
+.a4-editable-paper .signature-meta {
+  display: none !important;
+}
+
+.variable-chip {
+  display: inline-block;
+  padding: 1px 5px;
+  margin: 0 1px;
+  border-radius: 4px;
+  background: #dbeafe;
+  color: #1e3a8a;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.9em;
+  border: 1px solid #93c5fd;
+}
+
+.manual-page-break {
+  height: 0;
+  border-top: 2px dashed #ef4444;
+  margin: 22px 0;
+  page-break-after: always;
+  break-after: page;
+  position: relative;
+}
+
+.manual-page-break span {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  color: #b91c1c;
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  padding: 2px 8px;
+}
+
+.code-editor-panel {
+  padding: 18px;
+}
+
+.code-editor-panel textarea {
+  margin-top: 12px;
+}
+
+.template-help-card {
+  padding: 18px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.template-help-card h2 {
+  margin: 0 0 8px;
+}
+
+.placeholder-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.placeholder-list span {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+}
+
+@media (max-width: 900px) {
+  .template-builder-header {
+    flex-direction: column;
+  }
+
+  .toolbar-variable-group {
+    margin-left: 0;
+  }
+
+  .a4-preview-viewport {
+    min-height: 620px;
+    padding: 14px;
+  }
+}

@@ -318,6 +318,18 @@ function buildStyles() {
       .signature-meta {
         display: none !important;
       }
+
+      .manual-page-break {
+        height: 0;
+        border: 0;
+        margin: 0;
+        page-break-after: always;
+        break-after: page;
+      }
+
+      .manual-page-break span {
+        display: none;
+      }
     </style>
   `;
 }
