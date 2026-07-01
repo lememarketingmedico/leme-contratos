@@ -1,0 +1,30 @@
+services:
+  contratos-postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: leme_contratos
+      POSTGRES_USER: leme_contratos_user
+      POSTGRES_PASSWORD: LemeContratosDB2026Seguro47xP
+    ports:
+      - "5432:5432"
+    volumes:
+      - contratos_postgres_data:/var/lib/postgresql/data
+
+  contratos-web:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - contratos-postgres
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://leme_contratos_user:LemeContratosDB2026Seguro47xP@contratos-postgres:5432/leme_contratos?schema=public
+      APP_SECRET: desenvolvimento-local-troque-isso
+      ADMIN_NAME: Matheus - LEME
+      ADMIN_EMAIL: agencia.digital.leme@gmail.com
+      ADMIN_PASSWORD: LemeLocal123456
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+
+volumes:
+  contratos_postgres_data:
