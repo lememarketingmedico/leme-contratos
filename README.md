@@ -1,5 +1,11 @@
 # LEME Contratos
 
+## Atualização V9
+
+Esta versão corrige o build no EasyPanel quando aparece `./node_modules/.bin/prisma: not found` ou `npm error Exit handler never called`. O Dockerfile agora instala dependências sem usar `package-lock.json` no build e força Prisma 5.22.0 pelo `package.json`.
+
+
+
 Sistema interno da LEME para preencher contratos de prestação de serviços de marketing digital e exportar em PDF.
 
 
