@@ -1,6 +1,6 @@
-import { prisma } from '@/lib/db';
-import { requireUser } from '@/lib/auth';
-import { formatShortDate } from '@/lib/format';
+import { prisma } from '../../lib/db';
+import { requireUser } from '../../lib/auth';
+import { formatShortDate } from '../../lib/format';
 
 export default async function ClientsPage() {
   await requireUser();

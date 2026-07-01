@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
-import { getCurrentUser } from '@/lib/auth';
+import { getCurrentUser } from '../../lib/auth';
 
 export default async function LoginPage({ searchParams }: { searchParams?: { erro?: string } }) {
   const user = await getCurrentUser();

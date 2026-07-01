@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ReactNode } from 'react';
-import { getCurrentUser } from '@/lib/auth';
+import { getCurrentUser } from '../lib/auth';
 import { ThemeToggle } from './ThemeToggle';
 
 export async function AppShell({ children }: { children: ReactNode }) {

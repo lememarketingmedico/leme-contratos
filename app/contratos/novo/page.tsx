@@ -1,7 +1,7 @@
-import { prisma } from '@/lib/db';
-import { requireUser } from '@/lib/auth';
-import { createContractAction } from '@/app/actions';
-import { toDateInputValue } from '@/lib/format';
+import { prisma } from '../../../lib/db';
+import { requireUser } from '../../../lib/auth';
+import { createContractAction } from '../../actions';
+import { toDateInputValue } from '../../../lib/format';
 
 const defaultServiceDescription =
   'gerenciamento de redes sociais, criação, desenvolvimento e manutenção de website, captação de imagens e conteúdos audiovisuais, gestão de tráfego pago, planejamento estratégico, produção de conteúdos digitais e demais atividades correlatas necessárias à execução da estratégia comercial e publicitária da CONTRATANTE';

@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { prisma } from '@/lib/db';
-import { requireUser } from '@/lib/auth';
-import { updateContractStatusAction } from '@/app/actions';
-import { formatCurrencyFromCents, formatShortDate, statusLabels } from '@/lib/format';
+import { prisma } from '../../../lib/db';
+import { requireUser } from '../../../lib/auth';
+import { updateContractStatusAction } from '../../actions';
+import { formatCurrencyFromCents, formatShortDate, statusLabels } from '../../../lib/format';
 
 export default async function ContractDetailPage({ params }: { params: { id: string } }) {
   await requireUser();

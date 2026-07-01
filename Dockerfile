@@ -17,6 +17,10 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
+
+# Confere se o repositório enviado ao EasyPanel está completo.
+RUN test -f lib/db.ts && test -f lib/auth.ts && test -f lib/contractPdf.ts
+
 RUN npx prisma generate
 RUN npm run build
 

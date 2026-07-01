@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { prisma } from '@/lib/db';
-import { requireUser } from '@/lib/auth';
-import { formatCurrencyFromCents, formatShortDate, statusLabels } from '@/lib/format';
+import { prisma } from '../../lib/db';
+import { requireUser } from '../../lib/auth';
+import { formatCurrencyFromCents, formatShortDate, statusLabels } from '../../lib/format';
 
 export default async function DashboardPage() {
   await requireUser();

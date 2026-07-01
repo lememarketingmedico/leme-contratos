@@ -1,6 +1,6 @@
-import { prisma } from '@/lib/db';
-import { requireUser } from '@/lib/auth';
-import { saveCompanyConfigAction } from '@/app/actions';
+import { prisma } from '../../lib/db';
+import { requireUser } from '../../lib/auth';
+import { saveCompanyConfigAction } from '../actions';
 
 export default async function ConfigPage({ searchParams }: { searchParams?: { salvo?: string } }) {
   await requireUser();

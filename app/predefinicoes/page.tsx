@@ -1,6 +1,6 @@
-import { prisma } from '@/lib/db';
-import { requireUser } from '@/lib/auth';
-import { savePresetAction } from '@/app/actions';
+import { prisma } from '../../lib/db';
+import { requireUser } from '../../lib/auth';
+import { savePresetAction } from '../actions';
 
 function PresetForm({ preset }: { preset?: any }) {
   return (
