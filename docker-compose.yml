@@ -1,0 +1,30 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: leme_contratos
+      POSTGRES_USER: leme_user
+      POSTGRES_PASSWORD: leme_local_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://leme_user:leme_local_password@postgres:5432/leme_contratos?schema=public
+      APP_SECRET: desenvolvimento-local-troque-isso
+      ADMIN_NAME: Luis - LEME
+      ADMIN_EMAIL: agencia.digital.leme@gmail.com
+      ADMIN_PASSWORD: LemeLocal@123456
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+
+volumes:
+  postgres_data:

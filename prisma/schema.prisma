@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  COLLABORATOR
+}
+
+enum ContractStatus {
+  DRAFT
+  GENERATED
+  SENT
+  SIGNED
+  CANCELED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(COLLABORATOR)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Preset {
+  id             String     @id @default(cuid())
+  name           String     @unique
+  fullName       String
+  document       String?    @db.Text
+  email          String?    @db.Text
+  phone          String?    @db.Text
+  address        String?    @db.Text
+  city           String?    @db.Text
+  state          String?    @db.Text
+  signatureTitle String?    @db.Text
+  pix            String?    @db.Text
+  bankInfo       String?    @db.Text
+  active         Boolean    @default(true)
+  contracts      Contract[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model CompanyConfig {
+  id              String   @id @default(cuid())
+  companyName     String
+  document        String?  @db.Text
+  address         String?  @db.Text
+  city            String?  @db.Text
+  state           String?  @db.Text
+  email           String?  @db.Text
+  phone           String?  @db.Text
+  pix             String?  @db.Text
+  bankInfo        String?  @db.Text
+  logoPath        String?  @db.Text
+  defaultForoCity String?  @db.Text
+  signatureLabel  String?  @db.Text
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Client {
+  id             String     @id @default(cuid())
+  name           String
+  personType     String?    @db.Text
+  document       String?    @db.Text
+  representative String?    @db.Text
+  address        String?    @db.Text
+  city           String?    @db.Text
+  state          String?    @db.Text
+  email          String?    @db.Text
+  phone          String?    @db.Text
+  notes          String?    @db.Text
+  contracts      Contract[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model Contract {
+  id                 String         @id @default(cuid())
+  number             String         @unique
+  clientId           String
+  presetId           String?
+  status             ContractStatus @default(DRAFT)
+  serviceTitle       String         @default("Prestação de serviços de marketing digital")
+  serviceDescription String         @db.Text
+  startDate          DateTime
+  endDate            DateTime
+  monthlyValueCents  Int
+  monthlyValueText   String?        @db.Text
+  dueDay             Int
+  citySignature      String         @default("Araguari/MG")
+  signatureDate      DateTime
+  notes              String?        @db.Text
+  pdfPath            String?        @db.Text
+  client             Client         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  preset             Preset?        @relation(fields: [presetId], references: [id], onDelete: SetNull)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  @@index([clientId])
+  @@index([presetId])
+  @@index([createdAt])
+}
